@@ -1,0 +1,9 @@
+1.) Number of iterations to converge: 4
+
+State: S1,   V* = 51.2
+State: S2,   V* = 64
+State: S3,   V* = 0
+State: S4,   V* = 64
+State: S5,   V* = 80
+State: S6,   V* = 100
+2.) 
