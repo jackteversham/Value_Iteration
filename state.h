@@ -11,6 +11,7 @@ public:
 
     state(int id, vector<double> transitions):id(id), transitions(transitions){prevValue=0.0; newValue=0.0;}
     bool converged();
+    string bestPolicy(vector<state> &states);
 
 
 };

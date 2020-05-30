@@ -8,7 +8,7 @@
 using namespace std;
 
 
-double bell_eqn(state & s, vector<state> & states, const double discount, string optimalPath){ //performs a single operation
+double bell_eqn(state & s, vector<state> & states, const double discount){ //performs a single operation
     double expected_reward = 0.0;
 
     for(int i = 0; i< s.transitions.size(); i++){
@@ -21,9 +21,7 @@ double bell_eqn(state & s, vector<state> & states, const double discount, string
             }else{
                 reward = s.transitions[i];
             }
-            if(s.id == 1){
-                optimalPath += ("S"+to_string(i));
-            }
+            
             double newVal = reward + discount * states[i].prevValue;
             expected_reward = max(expected_reward, newVal);
         }
@@ -38,6 +36,7 @@ void update(vector<state> & states){ //oldValue becomes the current new value
         s.prevValue = s.newValue;
     }
 }
+
 
 
 
@@ -62,16 +61,15 @@ states.push_back(s6);
 
 bool converged = false;
 int iterations = 0;
+double discountF = 0.8;
 
 while(1){ //repeat until convergence
 //check for convergence
 
 if(!converged){
-
     for (auto &&s : states)  //for each state
 {
-    bell_eqn(s, states, 0.8, path); //compute bell eqn for each state, need to update after this
-    
+    bell_eqn(s, states, discountF); //compute bell eqn for each state, need to update after this
 }//end for
 
 } //end if
@@ -100,7 +98,12 @@ for (auto &&s : states){
     os <<"State: S"<<s.id<<",   V* = " <<s.prevValue <<endl;
 }
 
-os << "2.) " << path<<endl;
+os << "\n2.) " << s2.bestPolicy(states) <<endl;
+
+os << "\n3.) Yes.\nBy changing the discount factor, the agent cares less/more about future rewards, and thus V* (optimal value) will change however, the optimal policy may not necessarily change.\n"
+<<"If discount factor = 0.5 instead of 0.8 for example, the optimal policy from state 1 is the same as for question 2. The optimal values of each state changes (shown below:)"<<endl;
+
+
 
 
     return 0;

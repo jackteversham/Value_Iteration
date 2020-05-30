@@ -6,4 +6,16 @@ State: S3,   V* = 0
 State: S4,   V* = 64
 State: S5,   V* = 80
 State: S6,   V* = 100
-2.) 
+
+2.) State2 --> State5 --> State6 --> State3
+
+3.) Yes.
+By changing the discount factor, the agent cares less/more about future rewards, and thus V* (optimal value) will change however, the optimal policy may not necessarily change.
+If discount factor = 0.5 instead of 0.8 for example, the optimal policy from state 1 is the same as for question 2. The optimal values of each state changes (shown below:)
+
+State: S1,   V* = 25
+State: S2,   V* = 50
+State: S3,   V* = 0
+State: S4,   V* = 25
+State: S5,   V* = 50
+State: S6,   V* = 100
