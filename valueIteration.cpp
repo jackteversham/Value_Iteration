@@ -37,13 +37,39 @@ void update(vector<state> & states){ //oldValue becomes the current new value
     }
 }
 
+void runValueIteration(vector<state> &states, bool converged, int & iterations, double discountF){
+        while(1){ //repeat until convergence
+//check for convergence
 
+    if(!converged){
+     for (auto &&s : states)  //for each state
+    {
+         bell_eqn(s, states, discountF); //compute bell eqn for each state, need to update after this
+    }//end for
 
+}    //end if
+
+    int countConverged = 0;
+    for(auto &&s : states){
+        if(s.converged()){
+            countConverged++; //if a state hasconverged, increment count
+        }   
+    }
+
+    if(countConverged==states.size()){ //break if all states have converged
+        converged = true;
+    break;
+    }
+update(states);
+iterations ++;
+
+} //end while
+    
+}
 
 
 int main(void){
 vector<state> states;
-string path;
 //initialise states
 state s1(1,{0,1,0,1,0,0});
 state s2(2,{1,0,50,0,1,0});
@@ -63,33 +89,8 @@ bool converged = false;
 int iterations = 0;
 double discountF = 0.8;
 
-while(1){ //repeat until convergence
-//check for convergence
+runValueIteration(states, converged, iterations, discountF);
 
-if(!converged){
-    for (auto &&s : states)  //for each state
-{
-    bell_eqn(s, states, discountF); //compute bell eqn for each state, need to update after this
-}//end for
-
-} //end if
-
-
-int countConverged = 0;
-for (auto &&s : states){
-    if(s.converged()){
-        countConverged++; //if a state hasconverged, increment count
-    }   
-}
-
-if(countConverged==states.size()){ //break if all states have converged
-converged = true;
-break;
-}
-update(states);
-iterations ++;
-
-} //end while
 
 ofstream os("out.txt");
 
@@ -98,13 +99,42 @@ for (auto &&s : states){
     os <<"State: S"<<s.id<<",   V* = " <<s.prevValue <<endl;
 }
 
-os << "\n2.) " << s2.bestPolicy(states) <<endl;
+os << "\n2.) " << s1.bestPolicy(states) <<endl;
 
 os << "\n3.) Yes.\nBy changing the discount factor, the agent cares less/more about future rewards, and thus V* (optimal value) will change however, the optimal policy may not necessarily change.\n"
 <<"If discount factor = 0.5 instead of 0.8 for example, the optimal policy from state 1 is the same as for question 2. The optimal values of each state changes (shown below:)"<<endl;
 
 
+converged = false;
+discountF = 0.5;
+iterations = 0;
 
+runValueIteration(states, converged, iterations, discountF); //run again with different discount factor
+
+
+os << "\n" << s1.bestPolicy(states) <<"   The optimal policy has remained the same." ;
+
+
+os <<"\n\nNumber of iterations to converge: "<< iterations<<endl<<endl;;
+for (auto &&s : states){
+    os <<"State: S"<<s.id<<",   V* = " <<s.prevValue <<endl;
+}
+converged = false;
+discountF = 0.8;
+iterations = 0;
+states[3].transitions = {20,0,0,0,10,0}; //change the reward for transitions to other states from state 4
+runValueIteration(states, converged, iterations, discountF); //run again with different discount factor
+
+os<< "\nIf we change the reward values for the given transitions of a state (state 4 in this case), and leave the discount factor the same, we get:"<<endl;
+
+os << "\n" << s1.bestPolicy(states) <<"   The optimal policy has remained the same." ;
+
+os <<"\n\nNumber of iterations to converge: "<< iterations<<endl<<endl;;
+for (auto &&s : states){
+    os <<"State: S"<<s.id<<",   V* = " <<s.prevValue <<endl;
+}
+
+os.close();
 
     return 0;
 }
